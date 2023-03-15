@@ -1,0 +1,22 @@
+{
+  "name": "a2sv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "watch": "nodemon app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chatgpt": "^5.0.8",
+    "codeforces-api": "^1.0.3",
+    "node-telegram-bot-api": "^0.61.0",
+    "nodemon": "^2.0.21",
+    "python-shell": "^5.0.0"
+  },
+  "devDependencies": {
+    "esm": "^3.2.25"
+  }
+}
