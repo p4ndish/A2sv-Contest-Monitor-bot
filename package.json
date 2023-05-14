@@ -12,10 +12,6 @@
   "dependencies": {
     "chatgpt": "^5.0.8",
     "codeforces-api": "^1.0.3",
-<<<<<<< HEAD
-    "dotenv": "^16.0.3",
-=======
->>>>>>> 131bce994f6f55c7d0a8668635631bd90457ea72
     "node-fetch": "^2.6.9",
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^2.0.21",
