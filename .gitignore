@@ -1,1 +1,4 @@
 node_modules/
+.git
+packages-lock.json
+.env
