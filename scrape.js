@@ -1,9 +1,10 @@
 var Codeforces = require('codeforces-api');
 const { exit } = require('process');
- 
+ require('dotenv').config();
+
 //ES2015
-const key = "5113018e97b9a6280a59efe5c6c9a7c23124da4c"
-const s_key = "6c791731d921b9a4bf58552c5ae920027a53092a"
+const key = process.env.CODE_KEY;
+const s_key = process.env.SECRET_KEY;
 //set API keys for authentication
 Codeforces.setApis(key, s_key);
 

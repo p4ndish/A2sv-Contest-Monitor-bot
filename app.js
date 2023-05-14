@@ -1,13 +1,37 @@
 const { isInteger } = require('lodash');
+const fetch = require('node-fetch');
 require = require('esm')(module /*, options*/);
 const TelegramBot = require('node-telegram-bot-api');
 const { GetRank } = require('./scrape');
-// let rank = GetRank(430578)
-const token = 'bot-token';
+require('dotenv').config();
+
+const token = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
-const contestIds = [419532, 420178, 421700, 422879, 424233, 425122, 426951, 428258, 429357, 430578, 431213, 432138, 433100, 433716]
-
+const contestIds = [419532, 420178, 421700, 422879, 424233, 425122, 426951, 428258, 429357, 430578, 431213, 432138, 433100, 433716, 434753, 436386, 438582, 439859, 440900, 442062]
+ 
+ const sheetId = {
+      "Binary Search": "1GFYZHg8XE2HghelM9qKU2F6_bQQB4PghLbrDBHqefrE",
+      "Recursion": "1iUurRtQy3wwPTSYgtequ4BlDW9YDIl1OzdYW9FzV3HM",
+      "Stacks": "1SutEYgtTSQHS1F58nYvgTwA3mrs8TXdXp353bwEspcw",
+      "Sliding Window & Prefix": "1xNgSp44tV1luxPfyb0ywXqLwov7Wf6FFznNd5r13kSA",
+      "Two Pointers": "11qSjVROH0xNIDiPSGpRgxZz0AwM1PRlsw-frl_AYzcg",
+      "Sorting": "1Jg-ki9sMer8eJvIkDGAV5uslj8potAF5jcy2Z2sOxhw",
+      "Arrays/Matrix": "1XRvMPWDRN4Bjh4qfkLKyOaQNjIxb-X2r7LOb1a32xrU",
+      "Best Coding Practice": "1q1LOSb_ubg9bLmaF7miKZ7p8pWy2Jl9FBcvzjxVLC8U",
+      "Time/Space Complexity": "1zT8bDKmd0hZ6FDX-QVk7nnVCdQd1LCnw2xE2BhE2SB0",
+      "Numerics": "1y803BATqUFdGO0N4YNHFcsqrw1x9FUc7xLOpMuP4aO4",
+      "Bitwise Operation" : "1YGnbIUC34GZEUlooJm-MpJXCcDrTLt6DgHS7NXBv-y0",
+ }
+ 
+const refer_video = {
+    'Bitwise Operation ': 'https://anonfiles.com/6cteo4r3z6/BitwiseOperation_mp4',
+    "Queue": "https://anonfiles.com/H5W6n2r5zb/screen_capture_queue_mp4",
+    'Backtracking' : 'https://www.awesomescreenshot.com/video/16264406?key=d7d95f858356d87ea30805d11a911950',
+    'Monotonocity':'https://www.awesomescreenshot.com/video/16939529?key=83e625fa4b20c2b5e306958a19408c81',
+    'Recursion Recap': 'https://www.awesomescreenshot.com/video/16959271?key=fb763b9ff68c17f11a321dabd682179c',
+    'Recursion II' : 'https://www.awesomescreenshot.com/video/16264406?key=d7d95f858356d87ea30805d11a911950',
+}
 bot.onText(/\/?\.help/, (msg, match) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
@@ -16,8 +40,33 @@ bot.onText(/\/?\.help/, (msg, match) => {
         .catch((error) => console.error(error));
 
 
-    var msg = `Welcome to the bot.\nCommands:\n	.fetch <contest_id_number>\n\n   \teg: url = ..../contests/<430578>\n\t      .fetch 430578 \n\n.list (list past contests)\n\n.help or /help ~ help\n .about\n\n\n**update coming soon....**`
+    var msg = `Welcome to the bot.\nCommands:`+
+        `.fetch <contest_id_number>\n`+
+        `eg: url = ..../contests/<430578>\n`+
+        `.fetch 430578 \n`+
+        `.list (list past contests)\n`+
+        `.resource (To get all the lecture resources)`+
+        `.help or /help ~ help\n`+
+        `.about\n`+
+        `.dquote (To get daily Quotes)`+
+        `.updates (To check for updates logs)\n\n*****************`
 
+    bot.sendMessage(chatId, msg);
+});
+
+// updates 
+bot.onText(/\/?\.updates/, (msg, match) => {
+    const chatId = msg.chat.id;
+    const messageId = msg.message_id;
+    bot.deleteMessage(chatId, messageId)
+        .then(() => console.log('Message deleted successfully.'))
+        .catch((error) => console.error(error));
+    var msg = `Bot Updated Log!\n`+
+        `- Added past contest view option\n`+
+        `- Added menu buttons\n`+
+        `- Added All lecture resource file\n`+
+        `- Daily Quotes\n`+
+        `\n\n\n Contributors:\n @lucid_404 @Keni99 `;
     bot.sendMessage(chatId, msg);
 });
 
@@ -53,17 +102,131 @@ const codeforcesResult = (resp, chatId) => {
         return [result.rank, result.title.name]
     });
 }
+bot.onText(/\/?\.resource/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const keyboard = Object.keys(sheetId).map((key) => {
+    return [{ text: `.${key}`, callback_data: `.${key}` }];
+  });
+  const inlineKeyboard = {
+    inline_keyboard: keyboard,
+  };
+  bot.sendMessage(chatId, 'Please select a resource:', { reply_markup: inlineKeyboard });
+});
+
+const makeurl = (id, sid) =>{
+    const url = `https://docs.google.com/presentation/d/${sid}/export/pdf`;
+    const messagei = `Download/View Resource About: ${id}`
+    const ViewUrl = 'https://docs.google.com/presentation/d/' + sid ;
+    return {url, ViewUrl, messagei}
+}
 bot.on("callback_query", ({ data, message }) => {
     const chatId = message.chat.id;
-    codeforcesResult(Number(data),chatId)
+    const messageId = message.message_id;
+    // console.log(data.startsWith("."), )
+    
+    if(data.startsWith(".")){
+        // console.log("i am in", data)
+        
+        let id = data.replace(".", "")
+        if(id in refer_video){
+            
+            console.log("Found Video", refer_video[id]);
+            bot.sendMessage(chatId, `Video Link For ${id}`, { 
+            reply_markup: { 
+                inline_keyboard: [
+                    [{ text: "View Video", url: refer_video[id]  }]
+                    ]
+                } 
+            });
+        }else{
+            
+            let sid = sheetId[data.replace(".", "")]
+            const {url, ViewUrl, messagei} = makeurl(id, sid)
+            // console.log(url, ViewUrl, messagei)
+            // console.log(url, messagei, id)
+            bot.sendMessage(chatId, messagei, { 
+                reply_markup: { 
+                    inline_keyboard: [
+                        [{ text: "Download PDF", url: url }],
+                        [{ text: "View", url: ViewUrl }]
+                    ]
+                } 
+            });
+
+        }
+    }
+    else{
+        codeforcesResult(Number(data),chatId)
+    }
+    
 })
+
+
+
+// Record Video 
+bot.onText(/\/?\.video/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const keyboard = Object.keys(refer_video).map((key) => {
+    return [{ text: `.${key}`, callback_data: `.${key}` }];
+  });
+  const inlineKeyboard = {
+    inline_keyboard: keyboard,
+  };
+  bot.sendMessage(chatId, 'Please select a resource Video:', { reply_markup: inlineKeyboard });
+});
+//adding quote feautures 
+
+const quote = async () => {
+  try {
+    const res = await fetch("https://api.quotable.io/quotes/random?tags=inspirational|motivational");
+    if (!res.ok) {
+      throw new Error("Error...Try again....");
+    }
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.log("Net Error");
+    throw error; // re-throw the error so the caller can handle it
+  }
+};
+
+bot.onText(/\/?\.dquote/, (msg, match) => {
+
+    const chatId = msg.chat.id;
+    const messageId = msg.message_id;
+    bot.deleteMessage(chatId, messageId)
+        .then(() => console.log('Message deleted successfully.'))
+        .catch((error) => console.error(error));
+  quote().then((data) => {
+    // console.log(data);
+    let authors = data[0].author;
+    let contents = data[0].content;
+    let author = authors.replace(/[-.]/g, "\\$&");
+    let content = contents.replace(/[-.]/g, "\\$&");
+    
+    const chatId = msg.chat.id;
+    const messageId = msg.message_id;
+    bot.sendMessage(chatId, "Daily Quote✨\n"+`*${content}*`+
+                   "\n\n\\-||" + author + "||",{parse_mode: "MarkdownV2"} );
+
+  }).catch((error) => {
+    console.log(error);
+    bot.sendMessage(
+      msg.chat.id,
+      "Failed to fetch a quote. Please try again later.",
+      { parse_mode: "MarkdownV2" }
+    );
+  });
+});
+
+
 bot.onText(/\/start/, (msg, match) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
     var msg = `Welcome to the bot. Use @help or /help to get started`
     bot.sendMessage(chatId, msg,{
         reply_markup:{
-            keyboard:[[{text:".list"}],[{text:".about"}],[{text:".help"}]],
+            keyboard:[[{text:".list"}],[{text:".resource"}],[{text:".help"}],[{text:".about"}],[{text:".updates"}]],
             resize_keyboard:true
         }
     });
