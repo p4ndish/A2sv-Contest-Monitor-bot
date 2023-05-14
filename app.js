@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 require = require('esm')(module /*, options*/);
 const TelegramBot = require('node-telegram-bot-api');
 const { GetRank } = require('./scrape');
+<<<<<<< HEAD
 require('dotenv').config();
 
 const token = process.env.BOT_TOKEN;
@@ -31,6 +32,27 @@ const refer_video = {
     'Monotonocity':'https://www.awesomescreenshot.com/video/16939529?key=83e625fa4b20c2b5e306958a19408c81',
     'Recursion Recap': 'https://www.awesomescreenshot.com/video/16959271?key=fb763b9ff68c17f11a321dabd682179c',
     'Recursion II' : 'https://www.awesomescreenshot.com/video/16264406?key=d7d95f858356d87ea30805d11a911950',
+=======
+// const { quote } = require('./quote');
+// let rank = GetRank(430578)
+// const {Getresource} = require("./resources")
+
+const token = '';
+
+const bot = new TelegramBot(token, { polling: true });
+const contestIds = [419532, 420178, 421700, 422879, 424233, 425122, 426951, 428258, 429357, 430578, 431213, 432138, 433100, 433716]
+
+const sheetId = {
+    "Binary Search": "1GFYZHg8XE2HghelM9qKU2F6_bQQB4PghLbrDBHqefrE",
+    "Recursion": "1iUurRtQy3wwPTSYgtequ4BlDW9YDIl1OzdYW9FzV3HM",
+    "Stacks": "1SutEYgtTSQHS1F58nYvgTwA3mrs8TXdXp353bwEspcw",
+    "Sliding Window & Prefix": "1xNgSp44tV1luxPfyb0ywXqLwov7Wf6FFznNd5r13kSA",
+    "Two Pointers": "11qSjVROH0xNIDiPSGpRgxZz0AwM1PRlsw-frl_AYzcg",
+    "Sorting": "1Jg-ki9sMer8eJvIkDGAV5uslj8potAF5jcy2Z2sOxhw",
+    "Arrays/Matrix": "1XRvMPWDRN4Bjh4qfkLKyOaQNjIxb-X2r7LOb1a32xrU",
+    "Best Coding Practice": "1q1LOSb_ubg9bLmaF7miKZ7p8pWy2Jl9FBcvzjxVLC8U",
+    "Time/Space Complexity": "1zT8bDKmd0hZ6FDX-QVk7nnVCdQd1LCnw2xE2BhE2SB0",
+>>>>>>> 131bce994f6f55c7d0a8668635631bd90457ea72
 }
 bot.onText(/\/?\.help/, (msg, match) => {
     const chatId = msg.chat.id;
@@ -128,6 +150,7 @@ bot.on("callback_query", ({ data, message }) => {
         // console.log("i am in", data)
         
         let id = data.replace(".", "")
+<<<<<<< HEAD
         if(id in refer_video){
             
             console.log("Found Video", refer_video[id]);
@@ -154,10 +177,26 @@ bot.on("callback_query", ({ data, message }) => {
             });
 
         }
+=======
+        let sid = sheetId[data.replace(".", "")]
+        const {url, ViewUrl, messagei} = makeurl(id, sid)
+        console.log(url, ViewUrl, messagei)
+        // console.log(url, messagei, id)
+        bot.sendMessage(chatId, messagei, { 
+            reply_markup: { 
+                inline_keyboard: [
+                    [{ text: "Download PDF", url: url }],
+                    [{ text: "View", url: ViewUrl }]
+                ]
+            } 
+        });
+
+>>>>>>> 131bce994f6f55c7d0a8668635631bd90457ea72
     }
     else{
         codeforcesResult(Number(data),chatId)
     }
+<<<<<<< HEAD
     
 })
 
@@ -174,6 +213,11 @@ bot.onText(/\/?\.video/, (msg, match) => {
   };
   bot.sendMessage(chatId, 'Please select a resource Video:', { reply_markup: inlineKeyboard });
 });
+=======
+})
+
+
+>>>>>>> 131bce994f6f55c7d0a8668635631bd90457ea72
 //adding quote feautures 
 
 const quote = async () => {
