@@ -13,7 +13,7 @@
     "chatgpt": "^5.0.8",
     "codeforces-api": "^1.0.3",
 
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.4.1",
     "node-fetch": "^2.6.9",
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^2.0.21",
