@@ -1,6 +1,7 @@
 
-# <center>&raquo; **A2sv-Arbegna_bot** </center>
-- <code>a2sv Util bot</code>
+<h1 align="center"> A2sv Contest Monitor Bot </h1>
+
+- This is a bot designed to monitor codeforces custom contest hosted by A2SV ( african to silicon valley ) Every Week. It can also help for other custom contests give it a try.
 
 
 &rarrhk; ```Features this bot```
